@@ -1,0 +1,7 @@
+{
+  "name": "Prospectador B2B",
+  "description": "A mini-SaaS for sales professionals to find and manage B2B leads. It allows users to find local companies, organize contacts, classify by status, add notes, and create custom tags.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
