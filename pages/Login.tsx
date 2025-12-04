@@ -26,10 +26,7 @@ const Login: React.FC<LoginProps> = ({ setAuthPage }) => {
     return (
         <div className="w-full max-w-md">
             <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-                <div className="flex items-center justify-center mb-6">
-                    <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                        <p className="text-white font-bold text-xl">P</p>
-                    </div>
+                <div className="flex items-center justify-center mb-6"><img src="/logo-prospera.png" alt="Prospera Logo" className="w-16 h-16" />
                     <h1 className="ml-4 text-2xl font-bold text-gray-800">Prospectador B2B</h1>
                 </div>
                 <h2 className="text-xl font-semibold text-center text-gray-700 mb-6">Acessar sua conta</h2>
