@@ -1,21 +1,18 @@
 import * as supabaseJs from '@supabase/supabase-js';
 
-// --- AÇÃO NECESSÁRIA ---
-// Cole aqui a URL e a Chave Anônima (anon key) do seu projeto Supabase.
-// Você pode encontrá-las em "Project Settings" > "API" no seu painel Supabase.
-const supabaseUrl = 'COLE_AQUI_SUA_URL_SUPABASE';
-const supabaseAnonKey = 'COLE_AQUI_SUA_CHAVE_ANONIMA_SUPABASE';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-
-if (supabaseUrl.startsWith('COLE_AQUI') || supabaseAnonKey.startsWith('COLE_AQUI')) {
-    console.warn(`
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn(`
       ****************************************************************
       *                                                              *
       *  Credenciais do Supabase não configuradas.                    *
       *  O aplicativo está rodando em MODO DE DEMONSTRAÇÃO LOCAL.    *
       *  Os dados serão salvos no seu navegador, mas não em um banco *
-      *  de dados online. Para habilitar o modo online, edite o       *
-      *  arquivo 'services/supabaseClient.ts'.                       *
+      *  de dados online. Para habilitar o modo online, configure as *
+      *  variáveis VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no     *
+      *  arquivo '.env'.                                             *
       *                                                              *
       ****************************************************************
     `);
