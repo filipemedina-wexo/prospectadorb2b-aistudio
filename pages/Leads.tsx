@@ -6,24 +6,25 @@ import { LeadStatus } from '../types';
 import { STATUS_COLORS } from '../constants';
 
 interface LeadsProps {
-  leads: Lead[];
-  tags: Tag[];
-  updateLead: (updatedLead: Lead) => void;
-  setSelectedLead: (lead: Lead | null) => void;
-  currentProfile: Profile;
-  profiles: Profile[];
+    leads: Lead[];
+    tags: Tag[];
+    updateLead: (updatedLead: Lead) => void;
+    deleteLead: (leadId: string) => void;
+    setSelectedLead: (lead: Lead | null) => void;
+    currentProfile: Profile;
+    profiles: Profile[];
 }
 
 const StatusBadge: React.FC<{ status: LeadStatus }> = ({ status }) => {
-  const { bg, text, ring } = STATUS_COLORS[status];
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text} ring-1 ring-inset ${ring}`}>
-      {status}
-    </span>
-  );
+    const { bg, text, ring } = STATUS_COLORS[status];
+    return (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text} ring-1 ring-inset ${ring}`}>
+            {status}
+        </span>
+    );
 };
 
-const Leads: React.FC<LeadsProps> = ({ leads, tags, updateLead, setSelectedLead, currentProfile, profiles }) => {
+const Leads: React.FC<LeadsProps> = ({ leads, tags, updateLead, deleteLead, setSelectedLead, currentProfile, profiles }) => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const profileMap = useMemo(() => {
@@ -32,9 +33,9 @@ const Leads: React.FC<LeadsProps> = ({ leads, tags, updateLead, setSelectedLead,
             return acc;
         }, {} as Record<string, string>);
     }, [profiles]);
-    
+
     const filteredLeads = useMemo(() => {
-        return leads.filter(lead => 
+        return leads.filter(lead =>
             lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             lead.phone.toLowerCase().includes(searchTerm.toLowerCase())
         ).sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
@@ -47,8 +48,8 @@ const Leads: React.FC<LeadsProps> = ({ leads, tags, updateLead, setSelectedLead,
     return (
         <div className="p-6">
             <div className="mb-4">
-                 <input 
-                    type="text" 
+                <input
+                    type="text"
                     placeholder="Buscar por nome ou telefone..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -82,8 +83,8 @@ const Leads: React.FC<LeadsProps> = ({ leads, tags, updateLead, setSelectedLead,
                                 )}
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.phone}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <select 
-                                        value={lead.status} 
+                                    <select
+                                        value={lead.status}
                                         onChange={(e) => handleStatusChange(lead, e.target.value as LeadStatus)}
                                         className={`text-sm rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent py-1 px-3 ${STATUS_COLORS[lead.status].bg} ${STATUS_COLORS[lead.status].text} ${STATUS_COLORS[lead.status].ring.replace('ring-', 'border-')}`}
                                     >
@@ -92,26 +93,36 @@ const Leads: React.FC<LeadsProps> = ({ leads, tags, updateLead, setSelectedLead,
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex flex-wrap gap-1">
-                                    {lead.tags.map(tagId => {
-                                        const tag = tags.find(t => t.id === tagId);
-                                        return tag ? (
-                                            <span key={tag.id} className="px-2 py-1 text-xs font-medium rounded-full" style={{backgroundColor: `${tag.color}20`, color: tag.color}}>
-                                                {tag.name}
-                                            </span>
-                                        ) : null;
-                                    })}
+                                        {lead.tags.map(tagId => {
+                                            const tag = tags.find(t => t.id === tagId);
+                                            return tag ? (
+                                                <span key={tag.id} className="px-2 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: `${tag.color}20`, color: tag.color }}>
+                                                    {tag.name}
+                                                </span>
+                                            ) : null;
+                                        })}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(lead.updated_at).toLocaleDateString()}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button onClick={() => setSelectedLead(lead)} className="text-primary hover:text-primary-dark">Ver Detalhes</button>
+                                    <button onClick={() => setSelectedLead(lead)} className="text-primary hover:text-primary-dark mr-4">Ver Detalhes</button>
+                                    <button
+                                        onClick={() => {
+                                            if (window.confirm(`Tem certeza que deseja excluir o lead "${lead.name}"?`)) {
+                                                deleteLead(lead.id);
+                                            }
+                                        }}
+                                        className="text-red-600 hover:text-red-800"
+                                    >
+                                        Excluir
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-             {filteredLeads.length === 0 && (
+            {filteredLeads.length === 0 && (
                 <div className="text-center py-12 bg-white mt-[-1px] rounded-b-lg border border-t-0 border-gray-200 shadow-sm">
                     <p className="text-gray-500">Nenhum lead encontrado.</p>
                 </div>
